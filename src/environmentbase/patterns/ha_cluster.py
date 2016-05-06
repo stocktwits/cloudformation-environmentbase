@@ -36,6 +36,10 @@ class HaCluster(Template):
                  elb_health_check_port=None,
                  elb_health_check_protocol='TCP',
                  elb_health_check_path='',
+                 elb_health_check_interval=30,
+                 elb_health_check_timeout=5,
+                 elb_health_check_healthy_threshold=3,
+                 elb_health_check_unhealthy_threshold=5,
                  elb_idle_timeout=None,
                  update_policy_PauseTime='PT1M',
                  update_policy_MinInstancesInService=0,
@@ -85,6 +89,18 @@ class HaCluster(Template):
 
         # The ELB health check path for the cluster (Only for HTTP and HTTPS)
         self.elb_health_check_path = elb_health_check_path
+
+        # The ELB health check interval
+        self.elb_health_check_interval=elb_health_check_interval
+
+        # The ELB health check timeout
+        self.elb_health_check_timeout=elb_health_check_timeout
+
+        # The ELB health check healthy threshold
+        self.elb_health_check_healthy_threshold=elb_health_check_healthy_threshold
+
+        # The ELB health check unhealthy threshold
+        self.elb_health_check_unhealthy_threshold=elb_health_check_unhealthy_threshold
 
         # Add a creation policy with a custom timeout if one was specified
         if creation_policy_timeout:
@@ -252,7 +268,11 @@ class HaCluster(Template):
             idle_timeout=self.elb_idle_timeout,
             health_check_port=self.elb_health_check_port,
             health_check_protocol=self.elb_health_check_protocol,
-            health_check_path=self.elb_health_check_path
+            health_check_path=self.elb_health_check_path,
+            health_check_interval=self.elb_health_check_interval,
+            health_check_timeout=self.elb_health_check_timeout,
+            health_check_healthy_threshold=self.elb_health_check_healthy_threshold,
+            health_check_unhealthy_threshold=self.elb_health_check_unhealthy_threshold
         )
 
 

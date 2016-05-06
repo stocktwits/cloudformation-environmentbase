@@ -753,19 +753,23 @@ class Template(t.Template):
         """
         return self.name
 
-    def add_elb(self,
-                    resource_name,
-                listeners,
-                utility_bucket=None,
+    def add_elb(self, 
+                resource_name,
+                listeners, 
+                utility_bucket=None, 
                 elb_custom_tags=None,
-                instances=[],
-                security_groups=[],
-                depends_on=[],
-                subnet_layer=None,
-                scheme='internet-facing',
-                health_check_protocol='TCP',
-                health_check_port=None,
+                instances=[], 
+                security_groups=[], 
+                depends_on=[], 
+                subnet_layer=None, 
+                scheme='internet-facing', 
+                health_check_protocol='TCP', 
+                health_check_port=None, 
                 health_check_path='',
+                health_check_interval=30,
+                health_check_timeout=5,
+                health_check_healthy_threshold=3,
+                health_check_unhealthy_threshold=5,
                 connection_draining_timeout=None,  # AWS default is 300 seconds
                 cookie_expiration_period=None,
                 idle_timeout=None):
@@ -832,13 +836,12 @@ class Template(t.Template):
             # Ensure exactly one '/' at the beginning of the path string
             health_check_target += "/%s" % health_check_path.lstrip('/')
 
-        # TODO: Parameterize this stuff
         elb_obj.HealthCheck = elb.HealthCheck(
-            HealthyThreshold=3,
-            UnhealthyThreshold=5,
-            Interval=30,
+            HealthyThreshold=health_check_healthy_threshold,
+            UnhealthyThreshold=health_check_unhealthy_threshold,
+            Interval=health_check_interval,
             Target=health_check_target,
-            Timeout=5
+            Timeout=health_check_timeout
         )
 
         # If an S3 utility bucket was passed in, set up the ELB access log
