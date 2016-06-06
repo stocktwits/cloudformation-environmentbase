@@ -723,6 +723,12 @@ class Template(t.Template):
         else:
             auto_scaling_obj.Tags = []
 
+        self.setup_scaling_policies(scaling_policies, auto_scaling_obj)
+
+        auto_scaling_obj.Tags.append(autoscaling.Tag('Name', self._autoscaling_name_tag_value(), True))
+        return self.add_resource(auto_scaling_obj)
+
+    def setup_scaling_policies(self, scaling_policies, auto_scaling_obj):
         if scaling_policies is not None and len(scaling_policies) > 0:
             for scaling_policy in scaling_policies:
                 policy_obj = self.add_scaling_policy(
@@ -741,11 +747,7 @@ class Template(t.Template):
                     evaluation_periods=scaling_policy.get('evaluation_periods',1),
                     statistic=scaling_policy.get('statistic', 'Average'),
                     period=scaling_policy.get('period', 60),
-                    namespace=scaling_policy.get('namespace','AWS/EC2'),
-                    )
-
-        auto_scaling_obj.Tags.append(autoscaling.Tag('Name', self._autoscaling_name_tag_value(), True))
-        return self.add_resource(auto_scaling_obj)
+                    namespace=scaling_policy.get('namespace','AWS/EC2'))
 
     def _autoscaling_name_tag_value(self):
         """
