@@ -9,7 +9,7 @@ class Bastion(Template):
     Adds a bastion host within a given deployment based on environemntbase.
     """
 
-    def __init__(self, name='bastion', ingress_port='2222', access_cidr='0.0.0.0/0', instance_type='t2.micro', user_data=None, ami_name='amazonLinuxAmiId'):
+    def __init__(self, name='bastion', ingress_port='2222', access_cidr='0.0.0.0/0', instance_type='t2.micro', user_data=None, ami_name='amazonLinuxAmiId', idle_timeout=300):
         """
         Method initializes bastion host in a given environment deployment
         @param name [string] - name of the tier to assign
@@ -24,6 +24,7 @@ class Bastion(Template):
         self.instance_type = instance_type
         self.user_data = user_data
         self.ami_name = ami_name
+        self.idle_timeout = idle_timeout
 
         super(Bastion, self).__init__(template_name=name)
 
@@ -56,7 +57,8 @@ class Bastion(Template):
                 'elb_port': self.ingress_port,
                 'instance_port': SSH_PORT
             }],
-            utility_bucket=self.utility_bucket
+            utility_bucket=self.utility_bucket,
+            idle_timeout=self.idle_timeout
         )
 
         bastion_asg = self.add_asg(
