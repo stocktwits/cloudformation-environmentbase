@@ -42,6 +42,7 @@ class HaCluster(Template):
                  elb_health_check_unhealthy_threshold=5,
                  elb_idle_timeout=None,
                  asg_health_check_type='EC2',
+                 asg_health_check_grace_period=0,
                  update_policy_PauseTime='PT1M',
                  update_policy_MinInstancesInService=0,
                  update_policy_MaxBatchSize=1,
@@ -105,6 +106,9 @@ class HaCluster(Template):
 
         # The health check type for the ASG
         self.asg_health_check_type = asg_health_check_type
+
+        # The grace period for the ASG health check
+        self.asg_health_check_grace_period = asg_health_check_grace_period
 
         # Add a creation policy with a custom timeout if one was specified
         if creation_policy_timeout:
@@ -334,7 +338,8 @@ class HaCluster(Template):
             creation_policy=self.creation_policy,
             update_policy=self.update_policy,
             scaling_policies=self.scaling_policies,
-            health_check_type=self.asg_health_check_type
+            health_check_type=self.asg_health_check_type,
+            health_check_grace_period=self.asg_health_check_grace_period
         )
 
     def add_outputs(self):
