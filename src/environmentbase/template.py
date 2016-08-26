@@ -503,7 +503,8 @@ class Template(t.Template):
         threshold=10,
         period=60,
         namespace='AWS/EC2',
-        comparison_operator='GreaterThanThreshold'):
+        comparison_operator='GreaterThanThreshold',
+        custom_metric=False):
         """
         Helper method to encapsulate process of adding a cloudwatch alarm resource to a scaling policy
         """
@@ -515,9 +516,12 @@ class Template(t.Template):
             Period=str(period),
             AlarmActions=[Ref(scaling_policy_name)],
             Namespace=namespace,
-            Dimensions=[cloudwatch.MetricDimension(Name="AutoScalingGroupName",Value=Ref(asg_name))],
             ComparisonOperator=comparison_operator,
             MetricName=metric_name)
+
+        # custom metrics will not have an AutoScalingGroupName dimension
+        if not custom_metric:
+            alarm.Dimensions=[cloudwatch.MetricDimension(Name="AutoScalingGroupName",Value=Ref(asg_name))]
 
         return self.add_resource(alarm)
 
@@ -747,7 +751,8 @@ class Template(t.Template):
                     evaluation_periods=scaling_policy.get('evaluation_periods',1),
                     statistic=scaling_policy.get('statistic', 'Average'),
                     period=scaling_policy.get('period', 60),
-                    namespace=scaling_policy.get('namespace','AWS/EC2'))
+                    namespace=scaling_policy.get('namespace','AWS/EC2'),
+                    custom_metric=scaling_policy.get('custom_metric', False))
 
     def _autoscaling_name_tag_value(self):
         """
