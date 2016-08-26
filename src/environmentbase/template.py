@@ -732,13 +732,13 @@ class Template(t.Template):
         if scaling_policies is not None and len(scaling_policies) > 0:
             for scaling_policy in scaling_policies:
                 policy_obj = self.add_scaling_policy(
-                    scaling_policy.get('metric_name'),
+                    scaling_policy.get('alarm_name'),
                     auto_scaling_obj.name,
                     scaling_adjustment=scaling_policy.get('scaling_adjustment'),
                     adjustment_type=scaling_policy.get('adjustment_type','ChangeInCapacity'),
                     cooldown=scaling_policy.get('cooldown',1))
 
-                self.add_cloudwatch_alarm(scaling_policy.get('metric_name'),
+                self.add_cloudwatch_alarm(scaling_policy.get('alarm_name'),
                     policy_obj.name,
                     auto_scaling_obj.name,
                     metric_name=scaling_policy.get('metric_name'),
