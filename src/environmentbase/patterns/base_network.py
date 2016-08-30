@@ -219,6 +219,8 @@ class BaseNetwork(Template):
                 subnet_name + 'RouteTable',
                 VpcId=self.vpc_id))
 
+            self.add_output(Output(subnet_name + 'RouteTable', Value=self._ref_maybe(route_table)))
+
             # Create the NATs and egress rules
             self.create_subnet_egress(subnet_az, route_table, igw_title, subnet_type, subnet_layer, nat_config)
 
