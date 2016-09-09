@@ -53,7 +53,6 @@ class Template(t.Template):
         self._child_templates = []
         self._child_template_references = []
         self.manual_parameter_bindings = {}
-
         self._subnets = {}
 
     def _ref_maybe(self, item):
@@ -767,6 +766,7 @@ class Template(t.Template):
                 elb_custom_tags=None,
                 instances=[], 
                 security_groups=[], 
+                policies=[],
                 depends_on=[], 
                 subnet_layer=None, 
                 scheme='internet-facing', 
@@ -826,6 +826,7 @@ class Template(t.Template):
             Instances=instances,
             Scheme=scheme,
             DependsOn=depends_on,
+            Policies=policies,
             **optional_elb_kwargs
         )
 

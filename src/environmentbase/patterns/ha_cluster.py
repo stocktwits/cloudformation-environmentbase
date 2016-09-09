@@ -41,6 +41,7 @@ class HaCluster(Template):
                  elb_health_check_healthy_threshold=3,
                  elb_health_check_unhealthy_threshold=5,
                  elb_idle_timeout=None,
+                 elb_policies=[],
                  asg_health_check_type='EC2',
                  asg_health_check_grace_period=0,
                  update_policy_PauseTime='PT1M',
@@ -103,6 +104,9 @@ class HaCluster(Template):
 
         # The ELB health check unhealthy threshold
         self.elb_health_check_unhealthy_threshold=elb_health_check_unhealthy_threshold
+
+        # Optional Policies to add to the ELB
+        self.elb_policies = elb_policies
 
         # The health check type for the ASG
         self.asg_health_check_type = asg_health_check_type
@@ -280,7 +284,8 @@ class HaCluster(Template):
             health_check_interval=self.elb_health_check_interval,
             health_check_timeout=self.elb_health_check_timeout,
             health_check_healthy_threshold=self.elb_health_check_healthy_threshold,
-            health_check_unhealthy_threshold=self.elb_health_check_unhealthy_threshold            
+            health_check_unhealthy_threshold=self.elb_health_check_unhealthy_threshold,
+            policies=self.elb_policies
         )
 
 
